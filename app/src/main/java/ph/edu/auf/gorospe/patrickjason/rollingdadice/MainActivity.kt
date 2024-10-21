@@ -13,7 +13,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import ph.edu.auf.gorospe.patrickjason.rollingdadice.data.respository.DiceRepositoryImpl
+import ph.edu.auf.gorospe.patrickjason.rollingdadice.domain.usecase.RollDiceUseCase
 import ph.edu.auf.gorospe.patrickjason.rollingdadice.presentation.components.SimpleButton
+import ph.edu.auf.gorospe.patrickjason.rollingdadice.presentation.viewmodel.DiceViewModel
 import ph.edu.auf.gorospe.patrickjason.rollingdadice.ui.theme.RollingDaDiceTheme
 
 class MainActivity : ComponentActivity() {
@@ -29,9 +32,10 @@ class MainActivity : ComponentActivity() {
                             .padding(innerPadding),
                         contentAlignment = Alignment.Center
                     ) {
-                        SimpleButton(
-                            onClick = { /* Handle button click */ }
-                        )
+                        val diceRepository = DiceRepositoryImpl()
+                        val rollDiceUseCase = RollDiceUseCase(diceRepository)
+                        val diceViewModel = DiceViewModel(rollDiceUseCase)
+                        SimpleButton(viewModel = diceViewModel)
                     }
                 }
             }
