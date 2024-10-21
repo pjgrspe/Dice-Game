@@ -51,6 +51,10 @@ android {
 
 dependencies {
 
+    implementation(libs.androidx.animation)
+    implementation(libs.ui)
+    implementation(libs.ui.tooling)
+    implementation(libs.material3)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

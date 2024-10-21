@@ -15,7 +15,7 @@ import androidx.compose.ui.platform.LocalContext
 import ph.edu.auf.gorospe.patrickjason.rollingdadice.presentation.viewmodel.DiceViewModel
 
 @Composable
-fun SimpleButton(viewModel: DiceViewModel, modifier: Modifier = Modifier) {
+fun RandomizerButton(viewModel: DiceViewModel, modifier: Modifier = Modifier) {
     var results by remember { mutableStateOf(listOf<Int>()) }
     var resultCheck by remember { mutableStateOf("") }
     val context = LocalContext.current
