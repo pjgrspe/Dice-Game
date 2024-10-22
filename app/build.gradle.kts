@@ -51,6 +51,13 @@ android {
 
 dependencies {
 
+    implementation(libs.ui.v105)
+    implementation(libs.androidx.material3.v100alpha01)
+    implementation(libs.ui.tooling.preview)
+    implementation(libs.androidx.lifecycle.runtime.ktx.v231)
+    implementation(libs.androidx.activity.compose.v131)
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
     implementation(libs.androidx.animation)
     implementation(libs.ui)
     implementation(libs.ui.tooling)

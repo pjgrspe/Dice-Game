@@ -1,6 +1,7 @@
-// File: app/src/main/java/ph/edu/auf/gorospe/patrickjason/rollingdadice/presentation/screens/DiceScreen.kt
+// File: `app/src/main/java/ph/edu/auf/gorospe/patrickjason/rollingdadice/presentation/screens/DiceScreen.kt`
 package ph.edu.auf.gorospe.patrickjason.rollingdadice.presentation.screens
 
+import DiceViewModel
 import android.graphics.Bitmap
 import android.util.Log
 import androidx.compose.foundation.Image
@@ -16,6 +17,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -23,26 +26,29 @@ import ph.edu.auf.gorospe.patrickjason.rollingdadice.data.respository.DiceReposi
 import ph.edu.auf.gorospe.patrickjason.rollingdadice.domain.usecase.RollDiceUseCase
 import ph.edu.auf.gorospe.patrickjason.rollingdadice.presentation.components.RandomizerButton
 import ph.edu.auf.gorospe.patrickjason.rollingdadice.presentation.components.TextPlaceholder
-import ph.edu.auf.gorospe.patrickjason.rollingdadice.presentation.viewmodel.DiceViewModel
 import ph.edu.auf.gorospe.patrickjason.rollingdadice.ui.theme.RollingDaDiceTheme
+import ph.edu.auf.gorospe.patrickjason.rollingdadice.util.bouncingAnimation
 import ph.edu.auf.gorospe.patrickjason.rollingdadice.util.floatingAnimation
 
-@Preview
 @Composable
-fun DiceScreenPreview() {
-    Log.d("DiceScreen", "DiceScreen preview called")
-    RollingDaDiceTheme {
-        DiceScreen(
-            diceImages = listOf(),
-            displayText = "Roll the Dice!",
-            onButtonClick = { Log.d("DiceScreen", "Button clicked") }
-        )
-    }
-}
+fun DiceScreen(
+    diceImages: List<Bitmap>,
+    displayText: String,
+    onButtonClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    diceViewModel: DiceViewModel
+) {
+    val diceResults = diceViewModel.diceResults.value // Observe the dice results
+    val resultText = diceViewModel.resultText.value   // Observe the result text
+    val isRolling = diceViewModel.isRolling.value       // Observe rolling state
 
-@Composable
-fun DiceScreen(diceImages: List<Bitmap>, displayText: String, onButtonClick: () -> Unit, modifier: Modifier = Modifier) {
-    Log.d("DiceScreen", "DiceScreen composable called")
+    // If rolling, show random dice values; otherwise, show the actual results
+    val displayDiceResults = if (isRolling) {
+        List(6) { (1..6).random() } // Show random values during rolling
+    } else {
+        diceResults
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -50,8 +56,8 @@ fun DiceScreen(diceImages: List<Bitmap>, displayText: String, onButtonClick: () 
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        // Text Placeholder
-        TextPlaceholder(displayText)
+        // Display result text
+        TextPlaceholder(resultText)
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -60,13 +66,22 @@ fun DiceScreen(diceImages: List<Bitmap>, displayText: String, onButtonClick: () 
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            diceImages.take(3).forEach { bitmap ->
+            displayDiceResults.take(3).forEach { diceValue ->
                 Image(
-                    bitmap = bitmap.asImageBitmap(),
+                    bitmap = diceImages[diceValue - 1].asImageBitmap(), // Map dice result to image
                     contentDescription = null,
                     modifier = Modifier
                         .size(80.dp)
                         .floatingAnimation()
+                        .let {
+                            if (isRolling) {
+                                it
+                                    .rotate((360 * (1..5).random()).toFloat()) // Random rotation
+                                    .bouncingAnimation()
+                            } else {
+                                it // No transformation
+                            }
+                        }
                 )
             }
         }
@@ -78,23 +93,31 @@ fun DiceScreen(diceImages: List<Bitmap>, displayText: String, onButtonClick: () 
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            diceImages.drop(3).forEach { bitmap ->
+            displayDiceResults.drop(3).forEach { diceValue ->
                 Image(
-                    bitmap = bitmap.asImageBitmap(),
+                    bitmap = diceImages[diceValue - 1].asImageBitmap(), // Map dice result to image
                     contentDescription = null,
                     modifier = Modifier
                         .size(80.dp)
                         .floatingAnimation()
+                        .let {
+                            if (isRolling) {
+                                it
+                                    .rotate((360 * (1..5).random()).toFloat()) // Random rotation
+                                    .bouncingAnimation()
+                            } else {
+                                it // No transformation
+                            }
+                        }
                 )
             }
         }
 
         Spacer(modifier = Modifier.height(32.dp))
 
-
-        val diceRepository = DiceRepositoryImpl()
-        val rollDiceUseCase = RollDiceUseCase(diceRepository)
-        val diceViewModel = DiceViewModel(rollDiceUseCase)
+        // Randomizer button to roll dice
         RandomizerButton(viewModel = diceViewModel)
     }
 }
+
+

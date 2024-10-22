@@ -1,5 +1,6 @@
 package ph.edu.auf.gorospe.patrickjason.rollingdadice.util
 
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
@@ -15,7 +16,26 @@ import androidx.compose.ui.graphics.graphicsLayer
 import kotlin.random.Random
 
 @Composable
+fun Modifier.bouncingAnimation(): Modifier {
+    val infiniteTransition = rememberInfiniteTransition()
+
+    // Bounce effect parameters
+    val scale by infiniteTransition.animateFloat(
+        initialValue = 1f,
+        targetValue = 1.2f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 500, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        )
+    )
+
+    return this.scale(scale)
+}
+
+@Composable
 fun Modifier.floatingAnimation(): Modifier {
+
+
     val infiniteTransition = rememberInfiniteTransition()
 
     // Scale animations with wider ranges for a more obvious effect

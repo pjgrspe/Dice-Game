@@ -1,36 +1,45 @@
-// File: app/src/main/java/ph/edu/auf/gorospe/patrickjason/rollingdadice/presentation/components/RandomizerButton.kt
 package ph.edu.auf.gorospe.patrickjason.rollingdadice.presentation.components
 
-import android.widget.Toast
+import DiceViewModel
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import ph.edu.auf.gorospe.patrickjason.rollingdadice.presentation.viewmodel.DiceViewModel
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 @Composable
-fun RandomizerButton(viewModel: DiceViewModel, modifier: Modifier = Modifier) {
-    var results by remember { mutableStateOf(listOf<Int>()) }
-    var resultCheck by remember { mutableStateOf("") }
-    val context = LocalContext.current
-
+fun RandomizerButton(
+    viewModel: DiceViewModel,
+    modifier: Modifier = Modifier
+) {
     Button(
         onClick = {
-            viewModel.rollDiceSet()
-            results = viewModel.diceResults
-            resultCheck = viewModel.resultsCheck
-            Toast.makeText(context, "Results: ${results.joinToString(", ")}\nCheck: $resultCheck", Toast.LENGTH_LONG).show()
-
+            viewModel.rollDice()  // Keep the original roll functionality
         },
-        modifier = modifier,
-        colors = ButtonDefaults.buttonColors()
+        modifier = modifier
+            .padding(16.dp)
+            .background(
+                brush = Brush.linearGradient(
+                    colors = listOf(Color(0xFFFF0000), Color(0xFFFFA500)) // Red to Orange gradient
+                ),
+                shape = RoundedCornerShape(12.dp)
+            ),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color.Transparent,  // Transparent background for gradient
+            contentColor = Color.White  // White text color
+        )
     ) {
-        Text(text = "Click Me")
+        Text(
+            text = "Roll",
+            fontSize = 18.sp,
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+        )
     }
 }
